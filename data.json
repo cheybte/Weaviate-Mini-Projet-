@@ -1,0 +1,17 @@
+[
+  {
+    "question": "Comment démarrer Weaviate avec Docker ?",
+    "answer": "Utilise docker-compose pour lancer Weaviate et un module de vectorisation.",
+    "tag": "docker"
+  },
+  {
+    "question": "C'est quoi une base de données vectorielle ?",
+    "answer": "Elle stocke des embeddings (vecteurs) et permet la recherche par similarité.",
+    "tag": "concept"
+  },
+  {
+    "question": "Comment faire une recherche sémantique ?",
+    "answer": "On vectorise la requête puis on récupère les objets les plus proches.",
+    "tag": "search"
+  }
+]
