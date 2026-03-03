@@ -6,7 +6,7 @@ COLLECTION = "FAQ"
 
 def main():
     # Connexion à Weaviate (port 8082 car tu as mappé 8082:8080)
-    client = weaviate.connect_to_local(host="localhost", port=8082, grpc_port=50051)
+    client = weaviate.connect_to_local(host="weaviate", port=8080, grpc_port=50051)
 
     try:
         # Recréer la collection proprement

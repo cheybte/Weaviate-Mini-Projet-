@@ -3,7 +3,7 @@ services:
     image: semitechnologies/weaviate:latest
     ports:
       - "8082:8080"
-      - "50051:50051" 
+      - "50051:50051"
     environment:
       QUERY_DEFAULTS_LIMIT: "20"
       AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: "true"
@@ -11,6 +11,8 @@ services:
       DEFAULT_VECTORIZER_MODULE: "text2vec-transformers"
       ENABLE_MODULES: "text2vec-transformers"
       TRANSFORMERS_INFERENCE_API: "http://t2v-transformers:8080"
+      CLUSTER_HOSTNAME: "weaviate"
+      RAFT_BOOTSTRAP_EXPECT: "1"
     depends_on:
       - t2v-transformers
     volumes:
@@ -22,6 +24,18 @@ services:
       ENABLE_CUDA: "0"
     ports:
       - "8081:8080"
+
+  app:
+    build: .
+    depends_on:
+      - weaviate
+    working_dir: /app
+    command: >
+        sh -c "until curl -s http://weaviate:8080/v1/meta >/dev/null; do echo 'Waiting for Weaviate...'; sleep 1; done;
+        echo 'Weaviate is up ✅';
+        python import_from_json.py"
+    volumes:
+      - ./:/app
 
 volumes:
   weaviate_data: {}
