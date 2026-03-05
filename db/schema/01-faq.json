@@ -1,0 +1,9 @@
+{
+  "class": "FAQ",
+  "vectorizer": "text2vec-transformers",
+  "properties": [
+    { "name": "question", "dataType": ["text"] },
+    { "name": "answer",   "dataType": ["text"] },
+    { "name": "tag",      "dataType": ["text"] }
+  ]
+}

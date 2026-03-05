@@ -14,7 +14,7 @@ services:
       ENABLE_MODULES: "text2vec-transformers"
       TRANSFORMERS_INFERENCE_API: "http://t2v-transformers:8080"
 
-      # Single-node raft stability
+      # Single-node raft stability (fix leader not found)
       CLUSTER_HOSTNAME: "weaviate"
       RAFT_BOOTSTRAP_EXPECT: "1"
     depends_on:
@@ -29,23 +29,23 @@ services:
     ports:
       - "8081:8080"
 
-  # Bootstrap = applique db/schema/*.json + db/seed/*.json automatiquement
-  bootstrap:
-    build:
-      context: ./bootstrap
-    environment:
-      WEAVIATE_URL: "http://weaviate:8080"
-      # false = crée si absent (safe)
-      # true  = supprime/recrée les classes existantes (reset)
-      RESET_SCHEMA: "false"
+  app:
+    build: .
     depends_on:
       - weaviate
+    working_dir: /app
     volumes:
       - ./:/app
+    command: >
+      sh -c "until curl -s http://weaviate:8080/v1/meta >/dev/null 2>&1;
+      do echo 'Waiting for Weaviate...'; sleep 1; done;
+      echo 'Weaviate is up ✅';
+      python import_from_json.py"
 
   api:
     build:
-      context: ./api
+      context: .
+      dockerfile: Dockerfile.api
     environment:
       WEAVIATE_URL: "http://weaviate:8080"
       PORT: "5000"
